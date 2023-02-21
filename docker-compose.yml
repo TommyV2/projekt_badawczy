@@ -1,0 +1,6 @@
+version: "3.9"
+services:
+  python_flask:
+    build: ./python_flask
+    ports:
+      - "8000:5000"
