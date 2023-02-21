@@ -12,9 +12,10 @@ Uruchomienie:
 - /database_write - prosty write do bazy danych POST
 4. Baza danych postgres
 
-## SPRINT 1
+## SPRINT 1 
+### (deadline 5.03.2023)
 
-TODO: deadline 5.03.2023
+TODO: 
 - każdy robi 1 api ze swojej listy (+dockerfile działający z naszym wspólnym docker-compose)
 
 
