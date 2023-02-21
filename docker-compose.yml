@@ -4,3 +4,12 @@ services:
     build: ./python_flask
     ports:
       - "8000:5000"
+  db:
+    image: postgres:15.0-alpine
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: exampledb
