@@ -4,6 +4,8 @@ Uruchomienie:
 
 `docker compose up` w głównym folderze
 
+Założenia:
+
 1. Każdy framework w oddzielnym folderze (przykład python_flask)
 2. Do każdego dockerfile na alpine
 3. Endpointy:
