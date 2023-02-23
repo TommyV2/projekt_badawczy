@@ -1,0 +1,17 @@
+env: ENV["GENIE_ENV"]
+
+dev:
+  adapter: PostgreSQL
+  host: 127.0.0.1
+  port: 5432
+  database: exampledb
+  username: docker
+  password: docker
+
+test:
+  adapter: PostgreSQL
+  host: 127.0.0.1
+  port: 5432
+  database: exampledb
+  username: docker
+  password: docker
