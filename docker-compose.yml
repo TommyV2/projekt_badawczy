@@ -1,9 +1,16 @@
-version: "3.9"
+version: '3.9'
 services:
   python_flask:
     build: ./python_flask
     ports:
-      - "8000:5000"
+      - '8000:5000'
+  kotlin_ktor:
+    build: ./kotlin_ktor
+    ports:
+      - '8001:8080'
+    depends_on:
+      db:
+        condition: service_healthy
   db:
     image: postgres:15.0-alpine
     ports:
@@ -13,3 +20,6 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: exampledb
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -d exampledb -U docker']
+      interval: 5s
