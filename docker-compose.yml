@@ -1,5 +1,20 @@
 version: '3.9'
 services:
+  db:
+    image: postgres:15.0-alpine
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: exampledb
+    volumes:
+        - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+        - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -d exampledb -U docker']
+      interval: 5s
   kotlin_ktor:
     build: ./kotlin_ktor
     ports:
@@ -14,15 +29,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  db:
-    image: postgres:15.0-alpine
+  js_express:
+    build: ./js_express
     ports:
-      - 5432:5432
-    restart: always
-    environment:
-      POSTGRES_USER: docker
-      POSTGRES_PASSWORD: docker
-      POSTGRES_DB: exampledb
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -d exampledb -U docker']
-      interval: 5s
+      - '8003:3000'
+    depends_on:
+      db:
+        condition: service_healthy
