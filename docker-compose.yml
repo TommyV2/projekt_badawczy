@@ -36,3 +36,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  python_fastapi:
+    build: ./python_fastapi
+    ports:
+      - '8004:8004'
+    depends_on:
+      db:
+        condition: service_healthy
+
