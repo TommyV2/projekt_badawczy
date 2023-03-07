@@ -10,8 +10,8 @@ services:
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: exampledb
     volumes:
-        - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
-        - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -d exampledb -U docker']
       interval: 5s
@@ -24,6 +24,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - appnet
   # julia_genie:
   #   build: ./julia_genie
   #   ports:
@@ -38,6 +40,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - appnet
   python_fastapi:
     build: ./python_fastapi
     ports:
@@ -45,6 +49,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - appnet
 
   nginx:
     image: nginx:alpine
