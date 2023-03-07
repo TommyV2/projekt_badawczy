@@ -7,7 +7,7 @@ Uruchomienie:
 Założenia:
 
 1. Każdy framework w oddzielnym folderze (przykład python_flask)
-2. Do każdego dockerfile na alpine
+2. Do każdego dockerfile
 3. Endpointy:
 - /response - zwraca prostą odpowiedź GET
 - /database_read - prosty read z bazy danych GET
