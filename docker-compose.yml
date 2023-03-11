@@ -10,8 +10,8 @@ services:
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: exampledb
     volumes:
-        - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
-        - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -d exampledb -U docker']
       interval: 5s
@@ -33,6 +33,15 @@ services:
     build: ./js_express
     ports:
       - '8003:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+  java_spring:
+    build: ./java_spring
+    ports:
+      - '8004:80'
+    environment:
+      - SERVER_PORT=80
     depends_on:
       db:
         condition: service_healthy
