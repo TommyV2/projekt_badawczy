@@ -24,8 +24,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      networks:
-        - appnet
+    networks:
+      - appnet
   # julia_genie:
   #   build: ./julia_genie
   #   ports:
@@ -54,7 +54,7 @@ services:
   java_spring:
     build: ./java_spring
     ports:
-      - '8005:80'
+      - '8006:80'
     environment:
       - SERVER_PORT=80
     depends_on:
