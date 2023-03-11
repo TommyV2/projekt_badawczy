@@ -13,7 +13,7 @@ services:
       - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
       - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -d exampledb -U docker']
+      test: [ 'CMD-SHELL', 'pg_isready -d exampledb -U docker' ]
       interval: 5s
     networks:
       - appnet
@@ -51,7 +51,17 @@ services:
         condition: service_healthy
     networks:
       - appnet
-
+  java_spring:
+    build: ./java_spring
+    ports:
+      - '8006:80'
+    environment:
+      - SERVER_PORT=80
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - appnet
   nginx:
     image: nginx:alpine
     container_name: badawczy-nginx
