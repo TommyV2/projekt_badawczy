@@ -13,8 +13,10 @@ services:
       - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
       - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -d exampledb -U docker']
+      test: [ 'CMD-SHELL', 'pg_isready -d exampledb -U docker' ]
       interval: 5s
+    networks:
+      - appnet
   kotlin_ktor:
     build: ./kotlin_ktor
     ports:
@@ -22,13 +24,15 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  julia_genie:
-    build: ./julia_genie
-    ports:
-      - '8002:8000'
-    depends_on:
-      db:
-        condition: service_healthy
+      networks:
+        - appnet
+  # julia_genie:
+  #   build: ./julia_genie
+  #   ports:
+  #     - '8002:8000'
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
   js_express:
     build: ./js_express
     ports:
@@ -36,12 +40,51 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - appnet
+  python_fastapi:
+    build: ./python_fastapi
+    ports:
+      - '8004:8004'
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - appnet
   java_spring:
     build: ./java_spring
     ports:
-      - '8004:80'
+      - '8005:80'
     environment:
       - SERVER_PORT=80
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - appnet
+  nginx:
+    image: nginx:alpine
+    container_name: badawczy-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./php_laravel/badawczy:/var/www
+      - ./php_laravel/nginx:/etc/nginx/conf.d/
+    networks:
+      - appnet
+
+  app:
+    build: ./php_laravel/badawczy
+    image: badawczy
+    container_name: badawczy-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./php_laravel/badawczy:/var/www
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge

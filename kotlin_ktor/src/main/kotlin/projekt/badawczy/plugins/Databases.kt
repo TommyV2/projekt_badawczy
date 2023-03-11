@@ -11,15 +11,39 @@ import io.ktor.server.routing.*
 
 fun Application.configureDatabases() {
 
-    // val dbConnection: Connection = connectToPostgres()
-    // val cityService = CityService(dbConnection)
+    val dbConnection: Connection = connectToPostgres()
     routing {
         post("/database_write") {
-            val id = "b25a6810-481f-4dd2-ae50-735d6e1f46fc"
-            call.respond(HttpStatusCode.Created, id)
+            val name = "Generated"
+            val price = 999
+            val INSERT_NEW_PRODUCT = "INSERT INTO product (product_name, product_price) VALUES (?, ?)"
+            val statement = dbConnection.prepareStatement(INSERT_NEW_PRODUCT, Statement.RETURN_GENERATED_KEYS)
+            statement.setString(1, name)
+            statement.setInt(2, price)
+            statement.executeUpdate()
+
+            val generatedKeys = statement.generatedKeys
+            if(generatedKeys.next()) {
+                call.respond(HttpStatusCode.Created, generatedKeys.getInt(1))
+            }
+
+            call.respond(HttpStatusCode.Created, 0)
+
+
         }
         get("/database_read") {
-            call.respond(HttpStatusCode.OK)
+
+            val SELECT_PRODUCTS = "SELECT * FROM product"
+            val result = dbConnection.prepareStatement(SELECT_PRODUCTS).executeQuery()
+
+            val products = mutableListOf<Product>()
+            while(result.next()) {
+                val id = result.getInt("product_id")
+                val name = result.getString("product_name")
+                val price = result.getInt("product_price")
+                products.add(Product(id, name,price))
+            }
+            call.respond(HttpStatusCode.OK, products)
         }
     }
 }
@@ -30,9 +54,12 @@ fun Application.connectToPostgres(): Connection {
     // val user = environment.config.property("postgres.user").getString()
     // val password = environment.config.property("postgres.password").getString()
 
-    val url = "jdbc:postgresql://0.0.0.0:5432/exampledb"
+    val url = "jdbc:postgresql://db:5432/exampledb"
     val user = "docker"
     val password = "docker"
 
     return DriverManager.getConnection(url, user, password)
 }
+
+@Serializable
+data class Product(val id: Int, val name: String, val price: Int)
