@@ -40,7 +40,7 @@ app.get("/database_read", async (req, res, next) => {
     res.json(result.rows);
 });
 
-app.get("/database_write", async (req, res, next) => {
+app.post("/database_write", async (req, res, next) => {
     const result = await writeData();
     res.json("DB write");
 });
