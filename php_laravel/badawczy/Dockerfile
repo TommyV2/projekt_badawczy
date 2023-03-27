@@ -32,4 +32,6 @@ RUN mkdir -p /home/maciej/.composer && \
 # Set working directory
 WORKDIR /var/www
 
+COPY --chown=maciej:maciej . .
+RUN composer install
 USER maciej
