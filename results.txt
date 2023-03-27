@@ -9,3 +9,8 @@ js_express: database_write time = 0.058809988498687744
 python_fastapi: response time = 0.008887639045715332
 python_fastapi: database_read time = 0.01579383611679077
 python_fastapi: database_write time = 0.07421044111251832
+
+java_spring: response time = 0.008036286830902099
+java_spring: database_read time = 0.008882601261138916
+java_spring: database_write time = 0.009676699638366698
+
