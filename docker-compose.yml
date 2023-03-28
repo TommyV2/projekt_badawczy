@@ -85,6 +85,28 @@ services:
     networks:
       - appnet
 
+  nginx:
+    image: nginx:alpine
+    container_name: badawczy-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./php_laravel/badawczy:/var/www
+      - ./php_laravel/nginx:/etc/nginx/conf.d/
+    networks:
+      - appnet
+
+  app:
+    build: ./php_laravel/badawczy
+    image: badawczy
+    container_name: badawczy-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./php_laravel/badawczy:/var/www
+    networks:
+      - appnet
 networks:
   appnet:
     driver: bridge

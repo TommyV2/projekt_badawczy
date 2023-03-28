@@ -14,3 +14,7 @@ java_spring: response time = 0.008036286830902099
 java_spring: database_read time = 0.008882601261138916
 java_spring: database_write time = 0.009676699638366698
 
+laravel_php: response time = 2.0330142998695373
+laravel_php: database_read time = 2.1355504512786867
+laravel_php: database_write time = 3.1552587819099425
+
