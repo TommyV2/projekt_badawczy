@@ -1,0 +1,20 @@
+kotlin_ktor: response time = 0.012532057762145997
+kotlin_ktor: database_read time = 0.014215211868286132
+kotlin_ktor: database_write time = 0.04678668975830078
+
+js_express: response time = 0.008350837230682372
+js_express: database_read time = 0.015610601902008057
+js_express: database_write time = 0.058809988498687744
+
+python_fastapi: response time = 0.008887639045715332
+python_fastapi: database_read time = 0.01579383611679077
+python_fastapi: database_write time = 0.07421044111251832
+
+java_spring: response time = 0.008036286830902099
+java_spring: database_read time = 0.008882601261138916
+java_spring: database_write time = 0.009676699638366698
+
+laravel_php: response time = 2.0330142998695373
+laravel_php: database_read time = 2.1355504512786867
+laravel_php: database_write time = 3.1552587819099425
+
