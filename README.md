@@ -7,7 +7,7 @@ Uruchomienie:
 Założenia:
 
 1. Każdy framework w oddzielnym folderze (przykład python_flask)
-2. Do każdego dockerfile na alpine
+2. Do każdego dockerfile
 3. Endpointy:
 - /response - zwraca prostą odpowiedź GET
 - /database_read - prosty read z bazy danych GET
@@ -20,5 +20,11 @@ Założenia:
 TODO: 
 - każdy robi 1 api ze swojej listy (+dockerfile działający z naszym wspólnym docker-compose)
 
+## SPRINT 2 
+### (deadline 26.03.2023)
 
-
+TODO: 
+- skrypt na seedowanie bazy danych - 1 tabela, 1 milion rekordów - **Kuba**
+- skrypt do testowania czasu odpowiedzi endpointów (response, database_read, database_write), argument: N - wywołań, obliczanie średniej czasu **Tomek + Julian**
+- load/stress testy ogarnięcie narzędzia 2os **Andrzej + Maciek**
+- nginx (wszyscy)
