@@ -1,20 +1,36 @@
+100 rekordów:
+
 kotlin_ktor: response time = 0.012532057762145997
 kotlin_ktor: database_read time = 0.014215211868286132
 kotlin_ktor: database_write time = 0.04678668975830078
-
 js_express: response time = 0.008350837230682372
 js_express: database_read time = 0.015610601902008057
 js_express: database_write time = 0.058809988498687744
-
 python_fastapi: response time = 0.008887639045715332
 python_fastapi: database_read time = 0.01579383611679077
 python_fastapi: database_write time = 0.07421044111251832
-
 java_spring: response time = 0.008036286830902099
 java_spring: database_read time = 0.008882601261138916
 java_spring: database_write time = 0.009676699638366698
-
 laravel_php: response time = 2.0330142998695373
 laravel_php: database_read time = 2.1355504512786867
 laravel_php: database_write time = 3.1552587819099425
 
+
+50000 rekordów:
+
+laravel_php: response time = 2.118200833797455
+laravel_php: database_read time = 2.2253018736839296
+laravel_php: database_write time = 2.9668740010261536
+kotlin_ktor: response time = 0.013689155578613282
+kotlin_ktor: database_read time = 0.09313718557357788
+kotlin_ktor: database_write time = 0.0309708833694458
+js_express: response time = 0.007224664688110351
+js_express: database_read time = 0.14948208808898925
+js_express: database_write time = 0.042974588871002195
+python_fastapi: response time = 0.008294174671173096
+python_fastapi: database_read time = 0.01929176092147827
+python_fastapi: database_write time = 0.06805214881896973
+java_spring: response time = 0.013303124904632568
+java_spring: database_read time = 0.07860551118850707
+java_spring: database_write time = 0.012947063446044921
