@@ -3,9 +3,9 @@ import requests
 
 
 apps = {
-    # 'laravel_php': '8000',
+    'laravel_php': '8000',
     'kotlin_ktor': '8001',
-    'julia_genie': '8002',
+    # 'julia_genie': '8002',
     'js_express': '8003',
     'python_fastapi': '8004',
     'java_spring': '8006',
