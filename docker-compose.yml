@@ -62,17 +62,17 @@ services:
         condition: service_healthy
     networks:
       - appnet
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
+  rust_rocket:
+    build: ./rust_rocket
+    command: bash -c "cargo run"
     ports:
-      - 8000:80
-    volumes:
-      - ./php_laravel/badawczy:/var/www
-      - ./php_laravel/nginx:/etc/nginx/conf.d/
+      - '8007:6666'
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - appnet
-
+      
   laravel:
     build: ./php_laravel/badawczy
     restart: unless-stopped

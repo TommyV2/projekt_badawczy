@@ -33,5 +33,5 @@ RUN mkdir -p /home/maciej/.composer && \
 WORKDIR /var/www
 
 COPY --chown=maciej:maciej . .
-RUN composer install
+RUN composer install --no-scripts --no-autoloader
 USER maciej

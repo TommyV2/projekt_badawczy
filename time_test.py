@@ -9,6 +9,7 @@ apps = {
     'js_express': '8003',
     'python_fastapi': '8004',
     'java_spring': '8006',
+    'rust_rocket': '8007',
 }
 
 endpoints = [('response', 'GET'), ('database_read', 'GET'), ('database_write', 'POST')]
