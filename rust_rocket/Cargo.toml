@@ -1,9 +1,16 @@
 [package]
-name = "rust_rocket"
+name = "rest-api"
 version = "0.1.0"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["TmLev <sololev27@gmail.com>"]
+edition = "2018"
 
 [dependencies]
-rocket = "0.5.0-rc.1"
+diesel = "1.4.7"
+
+[dependencies.rocket]
+version = "0.5.0-rc.1"
+features = ["json"]
+
+[dependencies.rocket_sync_db_pools]
+version = "0.1.0-rc.1"
+features = ["diesel_postgres_pool"]
