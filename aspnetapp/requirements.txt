@@ -1,0 +1,4 @@
+Microsoft.AspNetCore
+Microsoft.AspNetCore.Mvc
+Microsoft.AspNetCore.ResponseCompression
+Npgsql.EntityFrameworkCore.PostgreSQL
