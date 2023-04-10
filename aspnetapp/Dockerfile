@@ -14,23 +14,30 @@
 # WORKDIR ./app /code/app
 # COPY --from=build-env /app/out .
 # ENTRYPOINT ["dotnet", "aspnetapp.dll"]
-
 # https://hub.docker.com/_/microsoft-dotnet
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /source
 
-# copy csproj and restore as distinct layers
-COPY *.sln .
-COPY aspnetapp/*.csproj ./aspnetapp/
-RUN dotnet restore
-
-# copy everything else and build app
-COPY aspnetapp/. ./aspnetapp/
-WORKDIR /source/aspnetapp
-RUN dotnet publish -c release -o /app --no-restore
-
-# final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
-COPY --from=build /app ./
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY ["aspnetapp.csproj", ""]
+RUN dotnet restore "./aspnetapp.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "aspnetapp.csproj" -c Release -o /app/build
+
+RUN wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        dotnet-sdk-5.0
+
+FROM build AS publish
+RUN dotnet publish "aspnetapp.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "aspnetapp.dll"]

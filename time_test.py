@@ -10,6 +10,7 @@ apps = {
     'python_fastapi': '8004',
     'java_spring': '8006',
     'rust_rocket': '8007',
+    'aspnetapp' : '8008'
 }
 
 endpoints = [('response', 'GET'), ('database_read', 'GET'), ('database_write', 'POST')]
@@ -43,7 +44,10 @@ for key in apps:
     for endpoint in endpoints:
         action_name = endpoint[0]
         action_type = endpoint[1]
-        url = f'http://localhost:{port}/{action_name}'
+        if port == apps['aspnetapp']:
+            url = f'http://localhost:{port}/values/{action_name}'
+        else:
+            url = f'http://localhost:{port}/{action_name}'
         if action_type == 'GET':
             average_time = run_test_get(url, retry_number)
         else:

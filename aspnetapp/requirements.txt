@@ -1,4 +1,5 @@
 Microsoft.AspNetCore
+Microsoft.AspNetCore.App
 Microsoft.AspNetCore.Mvc
 Microsoft.AspNetCore.ResponseCompression
 Npgsql.EntityFrameworkCore.PostgreSQL
