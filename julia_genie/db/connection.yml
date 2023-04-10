@@ -2,7 +2,7 @@ env: ENV["GENIE_ENV"]
 
 dev:
   adapter: PostgreSQL
-  host: 127.0.0.1
+  host: db
   port: 5432
   database: exampledb
   username: docker
@@ -10,7 +10,7 @@ dev:
 
 test:
   adapter: PostgreSQL
-  host: 127.0.0.1
+  host: db
   port: 5432
   database: exampledb
   username: docker
