@@ -5,7 +5,7 @@ using Npgsql;
 namespace aspnetapp.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("")]
     public class ValuesController : ControllerBase
     {
         // GET: /values/response
@@ -20,18 +20,28 @@ namespace aspnetapp.Controllers
         public IEnumerable<string> GetProductPrice()
         {
             string connectionString = "Host=db;Username=docker;Password=docker;Database=exampledb";
+            List<string> results = new List<string>();
+            
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
-                using (var command = new NpgsqlCommand("SELECT MAX(product_price) FROM product", connection))
+                using (var command = new NpgsqlCommand("SELECT * FROM product", connection))
+                using (var reader = command.ExecuteReader())
                 {
-                    var result = command.ExecuteScalar().ToString();
-                    return new string[] { result };
+                    while (reader.Read())
+                    {
+                        int id = reader.GetInt32(0);
+                        string name = reader.GetString(1);
+                        int price = reader.GetInt32(2);
+                        string result = $"{id}: {name} - {price}";
+                        results.Add(result);
+                    }
                 }
             }
+            
+            return results;
         }
-
         // POST: /values/database_write
         [HttpPost("database_write")]
         public IActionResult AddRecord()

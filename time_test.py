@@ -44,10 +44,7 @@ for key in apps:
     for endpoint in endpoints:
         action_name = endpoint[0]
         action_type = endpoint[1]
-        if port == apps['aspnetapp']:
-            url = f'http://localhost:{port}/values/{action_name}'
-        else:
-            url = f'http://localhost:{port}/{action_name}'
+        url = f'http://localhost:{port}/{action_name}'
         if action_type == 'GET':
             average_time = run_test_get(url, retry_number)
         else:
