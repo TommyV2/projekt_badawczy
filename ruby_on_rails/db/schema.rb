@@ -11,6 +11,14 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2023_04_11_130446) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "product", primary_key: "product_id", id: :serial, force: :cascade do |t|
+    t.string "product_name", limit: 250, null: false
+    t.integer "product_price"
+  end
+
   create_table "products", force: :cascade do |t|
     t.integer "product_id"
     t.string "product_name"

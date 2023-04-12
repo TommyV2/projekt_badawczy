@@ -6,24 +6,18 @@
 #
 default: &default
   adapter: postgresql
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
-  host: db
+  encoding: unicode
+  host: localhost
   port: 5432
+  database: exampledb
   username: docker
   password: docker
 
 development:
   <<: *default
-  database: exampledb
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: exampledb
 
 production:
   <<: *default
-  database: exampledb
