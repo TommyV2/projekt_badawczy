@@ -22,7 +22,7 @@ async def get_product_price():
         port=5432,
     )
     cur = conn.cursor()
-    cur.execute("SELECT MAX(product_price) FROM product;")
+    cur.execute("SELECT * FROM product;")
     result = cur.fetchall()
     print(f"{result=}")
     cur.close()
