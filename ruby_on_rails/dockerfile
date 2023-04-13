@@ -16,10 +16,10 @@ RUN bundle install --without development test
 # Copy the rest of the application code into the container
 COPY . .
 
-EXPOSE 8010:3000
+EXPOSE 8010:3001
 
 CMD ["bundle", "install"]
 CMD ["rails", "db:migrate"]
 
 # Start the Rails server
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "3001"]

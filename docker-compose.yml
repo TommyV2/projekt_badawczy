@@ -76,7 +76,7 @@ services:
   ruby_on_rails:
     build: ./ruby_on_rails
     ports:
-      - '8010:3000'
+      - '8010:3001'
     depends_on:
       db:
         condition: service_healthy
