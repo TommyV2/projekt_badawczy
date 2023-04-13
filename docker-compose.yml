@@ -92,6 +92,17 @@ services:
     networks:
       - appnet
 
+  go_gin:
+    build: ./go_gin
+    ports:
+      - '8009:8000'
+    depends_on:
+      - db
+    volumes:
+      - ./go_gin:/app
+    networks:
+      - appnet
+      
   laravel:
     build: ./php_laravel/badawczy
     restart: unless-stopped
