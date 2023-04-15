@@ -7,8 +7,8 @@ Genie.Configuration.config!(
   log_to_file                     = false,
   server_handle_static_files      = true,
   path_build                      = "build",
-  format_julia_builds             = true,
-  format_html_output              = true,
+  format_julia_builds             = false,
+  format_html_output              = false,
   watch                           = true
 )
 

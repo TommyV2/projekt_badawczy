@@ -1,5 +1,5 @@
 # pull latest julia image
-FROM julia:1.8.5
+FROM --platform=linux/amd64 julia:latest
 
 # create dedicated user
 RUN useradd --create-home --shell /bin/bash genie
@@ -12,19 +12,21 @@ WORKDIR /home/genie/app
 # configure permissions
 RUN chown -R genie:genie /home/
 
-RUN chmod +x bin/repl
-RUN chmod +x bin/server
-RUN chmod +x bin/runtask
+
 
 # switch user
 USER genie
+
+RUN chmod +x bin/repl
+RUN chmod +x bin/server
+RUN chmod +x bin/runtask
 
 # instantiate Julia packages
 RUN julia -e "using Pkg; Pkg.activate(\".\"); Pkg.instantiate(); Pkg.precompile(); "
 
 # ports
 EXPOSE 8000
-EXPOSE 8002
+EXPOSE 80
 
 # set up app environment
 ENV JULIA_DEPOT_PATH "/home/genie/.julia"

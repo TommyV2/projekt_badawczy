@@ -13,7 +13,7 @@ services:
       - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
       - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
     healthcheck:
-      test: [ 'CMD-SHELL', 'pg_isready -d exampledb -U docker' ]
+      test: ['CMD-SHELL', 'pg_isready -d exampledb -U docker']
       interval: 5s
     networks:
       - appnet
@@ -26,13 +26,15 @@ services:
         condition: service_healthy
     networks:
       - appnet
-  # julia_genie:
-  #   build: ./julia_genie
-  #   ports:
-  #     - '8002:8000'
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
+  julia_genie:
+    build: ./julia_genie
+    ports:
+      - '8002:8000'
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - appnet
   js_express:
     build: ./js_express
     ports:
@@ -81,7 +83,6 @@ services:
         condition: service_healthy
     networks:
       - appnet
-
   ruby_on_rails:
     build: ./ruby_on_rails
     ports:
@@ -91,7 +92,6 @@ services:
         condition: service_healthy
     networks:
       - appnet
-
   go_gin:
     build: ./go_gin
     ports:
@@ -101,8 +101,7 @@ services:
     volumes:
       - ./go_gin:/app
     networks:
-      - appnet
-      
+      - appnet 
   laravel:
     build: ./php_laravel/badawczy
     restart: unless-stopped
