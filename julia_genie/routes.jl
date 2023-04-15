@@ -1,4 +1,4 @@
-using Genie.Router, Genie.Responses
+using Genie.Router, Genie.Responses, Genie.Requests
 using SearchLight
 import Genie.Renderer.Json: json
 
@@ -25,8 +25,17 @@ route("/database_read") do
   dataframe_to_json(cur) |> json
 end
 
+route("/product/:product_id") do
+  query = "SELECT * FROM product WHERE product_id=$(payload(:product_id))"
+  cur = SearchLight.query(query)
+
+  dataframe_to_json(cur) |> json
+end
+
 route("/database_write", method = POST) do
-  query = "INSERT INTO product (product_name, product_price) VALUES ('Chair', '203' )"
+  name = jsonpayload()["name"]
+  price = jsonpayload()["price"]
+  query = "INSERT INTO product (product_name, product_price) VALUES ('$(name)', '$(price)' )"
   SearchLight.query(query)
   return setstatus(201)
 end
