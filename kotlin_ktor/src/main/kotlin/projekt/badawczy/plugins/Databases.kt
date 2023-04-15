@@ -14,12 +14,11 @@ fun Application.configureDatabases() {
     val dbConnection: Connection = connectToPostgres()
     routing {
         post("/database_write") {
-            val name = "Generated"
-            val price = 999
+            val newProduct = call.receive<NewProduct>()
             val INSERT_NEW_PRODUCT = "INSERT INTO product (product_name, product_price) VALUES (?, ?)"
             val statement = dbConnection.prepareStatement(INSERT_NEW_PRODUCT, Statement.RETURN_GENERATED_KEYS)
-            statement.setString(1, name)
-            statement.setInt(2, price)
+            statement.setString(1, newProduct.name)
+            statement.setInt(2, newProduct.price)
             statement.executeUpdate()
 
             val generatedKeys = statement.generatedKeys
@@ -28,9 +27,8 @@ fun Application.configureDatabases() {
             }
 
             call.respond(HttpStatusCode.Created, 0)
-
-
         }
+
         get("/database_read") {
 
             val SELECT_PRODUCTS = "SELECT * FROM product"
@@ -44,6 +42,19 @@ fun Application.configureDatabases() {
                 products.add(Product(id, name,price))
             }
             call.respond(HttpStatusCode.OK, products)
+        }
+
+        get("/product/{productId}") {
+            val SELECT_PRODUCT = "SELECT * FROM product WHERE product_id=" + call.parameters["productId"]
+            val result = dbConnection.prepareStatement(SELECT_PRODUCT).executeQuery()
+            if(result.next()) {
+                val id = result.getInt("product_id")
+                val name = result.getString("product_name")
+                val price = result.getInt("product_price")
+                val product = Product(id, name, price)
+
+                call.respond(HttpStatusCode.OK, product)
+            }else call.respond(HttpStatusCode.NotFound)
         }
     }
 }
@@ -63,3 +74,6 @@ fun Application.connectToPostgres(): Connection {
 
 @Serializable
 data class Product(val id: Int, val name: String, val price: Int)
+
+@Serializable
+data class NewProduct(val name: String, val price: Int)
