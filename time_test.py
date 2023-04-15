@@ -10,6 +10,7 @@ apps = {
     'python_fastapi': '8004',
     'java_spring': '8006',
     'rust_rocket': '8007',
+    'aspnetapp' : '8008'
 }
 
 endpoints = [('response', 'GET'), ('database_read', 'GET'), ('database_write', 'POST')]

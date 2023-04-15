@@ -53,6 +53,15 @@ services:
         condition: service_healthy
     networks:
       - appnet
+  aspnetapp:
+    build: ./aspnetapp
+    ports:
+      - '8008:80'
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - appnet
   java_spring:
     build: ./java_spring
     ports:
@@ -74,7 +83,25 @@ services:
         condition: service_healthy
     networks:
       - appnet
-
+  ruby_on_rails:
+    build: ./ruby_on_rails
+    ports:
+      - '8010:3001'
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - appnet
+  go_gin:
+    build: ./go_gin
+    ports:
+      - '8009:8000'
+    depends_on:
+      - db
+    volumes:
+      - ./go_gin:/app
+    networks:
+      - appnet 
   laravel:
     build: ./php_laravel/badawczy
     restart: unless-stopped
