@@ -1,10 +1,7 @@
 package pl.slowikowski.java_spring;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.slowikowski.java_spring.product.Product;
 import pl.slowikowski.java_spring.product.ProductRepository;
 
@@ -29,6 +26,12 @@ public class ApplicationController {
     @GetMapping("/database_read")
     public List<Product> databaseRead() {
         return productRepository.findAll();
+    }
+
+    @GetMapping("/product/{productId}")
+    public Product getProductById(@PathVariable("productId") String productId) {
+
+        return productRepository.findById(Integer.valueOf(productId)).orElse(null);
     }
 
     @PostMapping("/database_write")

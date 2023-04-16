@@ -11,6 +11,11 @@ class DatabaseController < ApplicationController
     @product.save
   end
 
+  def product_by_id
+    @product = Product.find_by(product_id: params[:productId])
+    render json:@product
+  end
+
   def product_params
     params.permit(:product_id, :product_name, :product_price)
   end
