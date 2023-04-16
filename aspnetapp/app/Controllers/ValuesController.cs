@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
+using Dapper;
 
 namespace aspnetapp.Controllers
 {
@@ -8,6 +9,8 @@ namespace aspnetapp.Controllers
     [Route("")]
     public class ValuesController : ControllerBase
     {
+        private readonly string connectionString = "Host=db;Username=docker;Password=docker;Database=exampledb";
+
         // GET: /values/response
         [HttpGet("response")]
         public IEnumerable<string> GetResponse()
@@ -19,44 +22,67 @@ namespace aspnetapp.Controllers
         [HttpGet("database_read")]
         public IEnumerable<string> GetProductPrice()
         {
-            string connectionString = "Host=db;Username=docker;Password=docker;Database=exampledb";
-            List<string> results = new List<string>();
-            
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
-                using (var command = new NpgsqlCommand("SELECT * FROM product", connection))
-                using (var reader = command.ExecuteReader())
+                var results = connection.Query<Product>("SELECT * FROM product");
+
+                List<string> resultStrings = new List<string>();
+                foreach (var result in results)
                 {
-                    while (reader.Read())
-                    {
-                        int id = reader.GetInt32(0);
-                        string name = reader.GetString(1);
-                        int price = reader.GetInt32(2);
-                        string result = $"{id}: {name} - {price}";
-                        results.Add(result);
-                    }
+                    string resultString = $"{result.product_id}: {result.product_name} - {result.product_price}";
+                    resultStrings.Add(resultString);
+                }
+
+                return resultStrings;
+            }
+        }
+        // GET: /values/product/{product_id}
+        [HttpGet("product/{product_id}")]
+        public IActionResult GetProductById(int product_id)
+        {
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var product = connection.QueryFirstOrDefault<Product>("SELECT * FROM product WHERE product_id = @product_id", new { product_id });
+                if (product != null)
+                {
+                    return Ok(product);
+                }
+                else
+                {
+                    return NotFound();
                 }
             }
-            
-            return results;
         }
         // POST: /values/database_write
         [HttpPost("database_write")]
         public IActionResult AddRecord()
         {
-            string connectionString = "Host=db;Username=docker;Password=docker;Database=exampledb";
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
-                using (var command = new NpgsqlCommand("INSERT INTO product (product_name, product_price) VALUES ('Chair', '203')", connection))
+                var product = new Product { product_name = "Chair", product_price = 203 };
+                var result = connection.Execute("INSERT INTO product (product_name, product_price) VALUES (@product_name, @product_price) RETURNING product_id", product);
+                if (result > 0)
                 {
-                    command.ExecuteNonQuery();
                     return CreatedAtAction(nameof(GetProductPrice), null);
+                }
+                else
+                {
+                    return BadRequest("Failed to insert record into the database.");
                 }
             }
         }
+    }
+
+    public class Product
+    {
+        public int product_id { get; set; }
+        public string product_name { get; set; }
+        public int? product_price { get; set; }
     }
 }
