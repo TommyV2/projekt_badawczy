@@ -34,7 +34,7 @@ fn response() -> &'static str {
     "Hello, world!"
 }
 
-#[rocket::get("/<id>")]
+#[rocket::get("/product/<id>")]
 async fn retrieve(
     connection: PgConnection,
     id: i32,
