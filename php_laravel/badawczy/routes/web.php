@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -20,12 +21,16 @@ Route::get('/response', function () {
 });
 
 Route::get('/database_read', function () {
-    $products = DB::connection('pgsql')->select("select * from product");
-    return $products;
+    return Product::all();
 });
 
 Route::post('/database_write', function (Request $request) {
-    $query = "insert into product (product_name, product_price) values ('".$request->input("product_name")."','".$request->input("product_price")."')";
-    DB::connection('pgsql')->insert($query);
+    $product = new Product;
+    $product->product_name = $request->name;
+    $product->product_price = $request->price;
+    $product->save();
 });
 
+Route::get('/product/{id}', function (int $id) {
+    return Product::findOrFail($id);
+});
