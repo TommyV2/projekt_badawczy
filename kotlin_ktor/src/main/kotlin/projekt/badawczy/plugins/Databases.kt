@@ -1,79 +1,64 @@
 package projekt.badawczy.plugins
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import kotlinx.serialization.Serializable
-import kotlinx.coroutines.*
-import java.sql.*
-import io.ktor.server.application.*
 import io.ktor.server.routing.*
+import org.ktorm.database.Database
+import org.ktorm.dsl.*
+import org.ktorm.entity.*
+import org.ktorm.jackson.KtormModule
+import org.ktorm.schema.Table
+import org.ktorm.schema.int
+import org.ktorm.schema.varchar
+import projekt.badawczy.plugins.Products.products
 
 fun Application.configureDatabases() {
 
-    val dbConnection: Connection = connectToPostgres()
+    val database = Database.connect("jdbc:postgresql://db:5432/exampledb", user = "docker", password = "docker")
+    val objectMapper = jacksonObjectMapper()
+    objectMapper.registerModule(KtormModule())
+
     routing {
+
         post("/database_write") {
-            val newProduct = call.receive<NewProduct>()
-            val INSERT_NEW_PRODUCT = "INSERT INTO product (product_name, product_price) VALUES (?, ?)"
-            val statement = dbConnection.prepareStatement(INSERT_NEW_PRODUCT, Statement.RETURN_GENERATED_KEYS)
-            statement.setString(1, newProduct.name)
-            statement.setInt(2, newProduct.price)
-            statement.executeUpdate()
-
-            val generatedKeys = statement.generatedKeys
-            if(generatedKeys.next()) {
-                call.respond(HttpStatusCode.Created, generatedKeys.getInt(1))
-            }
-
-            call.respond(HttpStatusCode.Created, 0)
+            val jsonString:String = call.receiveText()
+            val newProduct: Product = objectMapper.readValue(jsonString)
+            database.products.add(newProduct)
+            call.respond(HttpStatusCode.Created)
         }
 
         get("/database_read") {
-
-            val SELECT_PRODUCTS = "SELECT * FROM product"
-            val result = dbConnection.prepareStatement(SELECT_PRODUCTS).executeQuery()
-
-            val products = mutableListOf<Product>()
-            while(result.next()) {
-                val id = result.getInt("product_id")
-                val name = result.getString("product_name")
-                val price = result.getInt("product_price")
-                products.add(Product(id, name,price))
-            }
-            call.respond(HttpStatusCode.OK, products)
+            val products = database.products.toList()
+            val productsJson = objectMapper.writeValueAsString(products)
+            call.respondText(productsJson, contentType = ContentType.Application.Json, HttpStatusCode.OK)
         }
 
-        get("/product/{productId}") {
-            val SELECT_PRODUCT = "SELECT * FROM product WHERE product_id=" + call.parameters["productId"]
-            val result = dbConnection.prepareStatement(SELECT_PRODUCT).executeQuery()
-            if(result.next()) {
-                val id = result.getInt("product_id")
-                val name = result.getString("product_name")
-                val price = result.getInt("product_price")
-                val product = Product(id, name, price)
 
-                call.respond(HttpStatusCode.OK, product)
-            }else call.respond(HttpStatusCode.NotFound)
+        get("/product/{productId}") {
+            val id = call.parameters["productId"]!!.toInt()
+            val product = database.products.find { it.id eq id }
+            val json = objectMapper.writeValueAsString(product)
+            call.respondText(json, contentType = ContentType.Application.Json, HttpStatusCode.OK)
         }
     }
 }
 
-fun Application.connectToPostgres(): Connection {
-    Class.forName("org.postgresql.Driver")
-    // val url = environment.config.property("postgres.url").getString()
-    // val user = environment.config.property("postgres.user").getString()
-    // val password = environment.config.property("postgres.password").getString()
-
-    val url = "jdbc:postgresql://db:5432/exampledb"
-    val user = "docker"
-    val password = "docker"
-
-    return DriverManager.getConnection(url, user, password)
+object Products : Table<Product>("product") {
+    val Database.products get() = this.sequenceOf(Products)
+    val id = int("product_id").primaryKey().bindTo { it.id }
+    val name = varchar("product_name").bindTo { it.name }
+    val price = int("product_price").bindTo { it.price }
 }
 
-@Serializable
-data class Product(val id: Int, val name: String, val price: Int)
 
-@Serializable
-data class NewProduct(val name: String, val price: Int)
+interface Product : Entity<Product> {
+
+    companion object : Entity.Factory<Product>()
+    val id: Int
+    var name: String
+    var price: Int
+}
