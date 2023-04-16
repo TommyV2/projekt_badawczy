@@ -17,6 +17,36 @@ services:
       interval: 5s
     networks:
       - appnet
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./php_laravel/badawczy:/var/www
+      - ./php_laravel/nginx:/etc/nginx/conf.d/
+    networks:
+      - appnet
+
+  laravel:
+    build: ./php_laravel/badawczy
+    restart: unless-stopped
+    networks:
+      - appnet
+
+  app:
+    build: ./php_laravel/badawczy
+    image: badawczy
+    container_name: badawczy-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./php_laravel/badawczy:/var/www
+    networks:
+      - appnet
+      
+
   kotlin_ktor:
     build: ./kotlin_ktor
     ports:
@@ -53,15 +83,6 @@ services:
         condition: service_healthy
     networks:
       - appnet
-  aspnetapp:
-    build: ./aspnetapp
-    ports:
-      - '8008:80'
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - appnet
   java_spring:
     build: ./java_spring
     ports:
@@ -83,10 +104,10 @@ services:
         condition: service_healthy
     networks:
       - appnet
-  ruby_on_rails:
-    build: ./ruby_on_rails
+  aspnetapp:
+    build: ./aspnetapp
     ports:
-      - '8010:3001'
+      - '8008:80'
     depends_on:
       db:
         condition: service_healthy
@@ -102,32 +123,13 @@ services:
       - ./go_gin:/app
     networks:
       - appnet 
-  laravel:
-    build: ./php_laravel/badawczy
-    restart: unless-stopped
-    networks:
-      - appnet
-
-  nginx:
-    image: nginx:alpine
-    container_name: badawczy-nginx
-    restart: unless-stopped
+  ruby_on_rails:
+    build: ./ruby_on_rails
     ports:
-      - 8000:80
-    volumes:
-      - ./php_laravel/badawczy:/var/www
-      - ./php_laravel/nginx:/etc/nginx/conf.d/
-    networks:
-      - appnet
-
-  app:
-    build: ./php_laravel/badawczy
-    image: badawczy
-    container_name: badawczy-app
-    restart: unless-stopped
-    working_dir: /var/www/
-    volumes:
-      - ./php_laravel/badawczy:/var/www
+      - '8010:3001'
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - appnet
 networks:
