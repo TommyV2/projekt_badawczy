@@ -1,7 +1,8 @@
 using Genie.Router, Genie.Responses, Genie.Requests
 using SearchLight
 import Genie.Renderer.Json: json
-
+import SearchLight: AbstractModel, DbId, save!, findone
+import Base: @kwdef
 function dataframe_to_json(df)
   li = []
   for row in eachrow(df)
@@ -19,24 +20,25 @@ route("/response") do
 end
 
 route("/database_read") do
-  query = "SELECT * FROM product"
-  cur = SearchLight.query(query)
-
-  dataframe_to_json(cur) |> json
+  all_products = all(Product)
+  all_products |> json
 end
 
 route("/product/:product_id") do
-  query = "SELECT * FROM product WHERE product_id=$(payload(:product_id))"
-  cur = SearchLight.query(query)
-
-  dataframe_to_json(cur) |> json
+  p_id = payload(:product_id)
+  product = findone(Product, id = p_id)
+  product |> json
 end
 
 route("/database_write", method = POST) do
   name = jsonpayload()["name"]
   price = jsonpayload()["price"]
-  query = "INSERT INTO product (product_name, product_price) VALUES ('$(name)', '$(price)' )"
-  SearchLight.query(query)
+  Product(product_name = name, product_price = price) |> save
   return setstatus(201)
 end
 
+@kwdef mutable struct Product <: AbstractModel
+  id::DbId = DbId()
+  product_name::String = ""
+  product_price::Integer = 0
+end
