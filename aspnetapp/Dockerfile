@@ -23,7 +23,10 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["aspnetapp.csproj", ""]
+
 RUN dotnet restore "./aspnetapp.csproj"
+# Install the Dapper NuGet package
+RUN dotnet add package Dapper
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "aspnetapp.csproj" -c Release -o /app/build

@@ -3,3 +3,7 @@ Microsoft.AspNetCore.App
 Microsoft.AspNetCore.Mvc
 Microsoft.AspNetCore.ResponseCompression
 Npgsql.EntityFrameworkCore.PostgreSQL
+Npgsql
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.Tools
+Dapper
