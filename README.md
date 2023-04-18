@@ -36,3 +36,42 @@ TODO:
 - skrypt do testowania czasu odpowiedzi endpointów (response, database_read, database_write), argument: N - wywołań, obliczanie średniej czasu **Tomek + Julian**
 - load/stress testy ogarnięcie narzędzia 2os **Andrzej + Maciek**
 - nginx (wszyscy)
+
+## SPRINT 3
+endpointy:
+
+/response
+/database_read
+/database_read_conn
+/database_write
+/database_write_conn
+/database_write_many
+/database_write_many_conn
+/product/:id
+
+
+body:
+
+// database_write
+
+
+{
+    "name": "ABC",
+    "price": 20
+}
+
+
+// database_write_many
+
+{
+    "products": [
+        {
+            "name": "ABC",
+            "price": 20
+        },
+        {
+            "name": "ABC2",
+            "price": 21
+        }
+    ]  
+}
