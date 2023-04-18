@@ -40,14 +40,14 @@ TODO:
 ## SPRINT 3
 endpointy:
 
-/response
-/database_read
-/database_read_conn
-/database_write
-/database_write_conn
-/database_write_many
-/database_write_many_conn
-/product/:id
+- /response
+- /database_read
+- /database_read_conn
+- /database_write
+- /database_write_conn
+- /database_write_many
+- /database_write_many_conn
+- /product/:id
 
 
 body:
