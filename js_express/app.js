@@ -9,13 +9,13 @@ const Product = require("./src/models/product");
 var app = express();
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: false }));
-// const pool = new Pool({
-//     user: 'docker',
-//     host: 'db',
-//     database: 'exampledb',
-//     password: 'docker',
-//     port: 5432
-// });
+const pool = new Pool({
+    user: 'docker',
+    host: 'db',
+    database: 'exampledb',
+    password: 'docker',
+    port: 5432
+});
 
 const readData = async () => {
     res = await pool.query("SELECT * FROM product");
@@ -29,6 +29,16 @@ const writeData = async () => {
         [product_name, price]
     );
 
+    return res;
+};
+
+const writeDataMany = async (times) => {
+    const [product_name, price] = ["Generated", 999];
+    for(var i = 0; i < times; i++){
+        res = await pool.query("INSERT INTO product (product_name, product_price) VALUES ($1, $2)",
+            [product_name, price]
+        );
+    }
     return res;
 };
 
@@ -55,6 +65,12 @@ app.get("/database_read", async (req, res) => {
         }
 });
 
+app.get("/database_read_conn", async (req, res) => {
+    const result = await readData();
+    console.log(result);
+    res.json(result.rows);
+});
+
 app.get("/product/:id", async (req, res) => {
     // const result = await readData();
     // console.log(result);
@@ -76,6 +92,7 @@ app.post("/database_write", async (req, res) => {
     // res.json("DB write");
     // const name =  req.body.product_name;
     // const price = req.body.product_price;
+
     await Product.create({
             product_name: "Generated JS",
             product_price: 123
@@ -87,3 +104,30 @@ app.post("/database_write", async (req, res) => {
         });
 
 });
+
+app.post("/database_write_many", async (req, res) => {
+    // const result = await writeData();
+    // res.json("DB write");
+    // const name =  req.body.product_name;
+    // const price = req.body.product_price;
+    var times = 10;
+    
+    for(var i = 0; i < times; i++){
+        res = await Product.create({
+            product_name: "Generated JS",
+            product_price: 123
+        })
+    }
+    return res;
+});
+
+app.post("/database_write_conn", async (req, res) => {
+    const result = await writeData();
+    res.json("DB write");
+});
+
+app.post("/database_write_conn_many", async (req, res) => {
+    const result = await writeDataMany(10);
+    res.json("DB write");
+});
+
