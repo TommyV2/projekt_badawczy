@@ -69,3 +69,36 @@ async fn create(
             })
         })
 }
+
+#[rocket::post("/database_write_many")]
+async fn create_many(
+    connection: PgConnection,
+) -> &'static str  {
+    
+    for n in 1..11 {
+        let product = NewArtist { product_name: "Rust_Generated".to_string(), product_price: 99 };
+        connection
+        .run(move |c| {
+            diesel::insert_into(product::table)
+                .values(&product)
+                .get_result(c)
+        })
+        .await
+    } 
+    "created many"
+}
+
+
+// use postgres::{Client, Error, NoTls};
+// fn main() -> Result<(), Error> {
+//     let mut client = Client::connect(
+//         "postgresql://dboperator:operatorpass123@localhost:5243/postgres",
+//         NoTls,
+//     )?;
+//     Ok(())
+// }
+
+// client.execute(
+//     "INSERT INTO app_user (username, password, email) VALUES ($1, $2, $3)",
+//     &[&"user1", &"mypass", &"user@test.com"],
+// )?;

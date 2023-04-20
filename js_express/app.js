@@ -126,7 +126,7 @@ app.post("/database_write_conn", async (req, res) => {
     res.json("DB write");
 });
 
-app.post("/database_write_conn_many", async (req, res) => {
+app.post("/database_write_many_conn", async (req, res) => {
     const result = await writeDataMany(10);
     res.json("DB write");
 });
