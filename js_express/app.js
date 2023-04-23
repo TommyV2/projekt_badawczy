@@ -113,12 +113,12 @@ app.post("/database_write_many", async (req, res) => {
     var times = 10;
     
     for(var i = 0; i < times; i++){
-        res = await Product.create({
+        await Product.create({
             product_name: "Generated JS",
             product_price: 123
         })
     }
-    return res;
+    res.json("DB write");
 });
 
 app.post("/database_write_conn", async (req, res) => {
