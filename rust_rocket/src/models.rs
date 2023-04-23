@@ -12,7 +12,7 @@ pub struct Artist {
     pub product_price: i32,
 }
 
-#[derive(Deserialize, Insertable, Debug)]
+#[derive(Deserialize, Insertable, Debug, Clone)]
 #[serde(crate = "rocket::serde")]
 #[table_name = "product"]
 pub struct NewArtist {
