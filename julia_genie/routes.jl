@@ -3,6 +3,7 @@ using SearchLight
 import Genie.Renderer.Json: json
 import SearchLight: AbstractModel, DbId, save!, findone
 import Base: @kwdef
+
 function dataframe_to_json(df)
   li = []
   for row in eachrow(df)
@@ -36,6 +37,42 @@ route("/database_write", method = POST) do
   Product(product_name = name, product_price = price) |> save
   return setstatus(201)
 end
+
+route("/database_write_many", method = POST) do
+  name, price = ["ABC", 12]
+  for i in 1:10
+    Product(product_name = name, product_price = price) |> save
+  end
+  return setstatus(201)
+end
+
+route("/database_read_conn") do
+  query = "SELECT * FROM product"
+  cur = SearchLight.query(query)
+
+  dataframe_to_json(cur) |> json
+end
+
+route("/database_write_conn", method = POST) do
+  name = jsonpayload()["name"]
+  price = jsonpayload()["price"]
+  query = "INSERT INTO product (product_name, product_price) VALUES ('$(name)', '$(price)' )"
+  SearchLight.query(query)
+  return setstatus(201)
+end
+
+route("/database_write_many_conn", method = POST) do
+  name, price = ["ABC", 12]
+  query = "INSERT INTO product (product_name, product_price) VALUES ('$(name)', '$(price)' )"
+  for i in 1:9
+    query = query * ", ('$(name)', '$(price)' )"
+  end
+
+  SearchLight.query(query)
+  return setstatus(201)
+end
+
+
 
 @kwdef mutable struct Product <: AbstractModel
   id::DbId = DbId()
