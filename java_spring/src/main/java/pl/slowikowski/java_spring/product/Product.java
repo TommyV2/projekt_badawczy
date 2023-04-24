@@ -1,6 +1,7 @@
 package pl.slowikowski.java_spring.product;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -18,6 +19,11 @@ public class Product {
 
     public Product(final int product_id, final String product_name, final int product_price) {
         this.product_id = product_id;
+        this.product_name = product_name;
+        this.product_price = product_price;
+    }
+
+    public Product(final String product_name, final int product_price) {
         this.product_name = product_name;
         this.product_price = product_price;
     }
