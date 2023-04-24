@@ -1,9 +1,15 @@
 class DatabaseController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:write]
+  skip_before_action :verify_authenticity_token, only: [:write, :write_conn, :write_many, :write_many_conn]
 
   def read
     @products = Product.select(:product_id, :product_name, :product_price)
-    render json:@products
+    render json: @products
+  end
+
+  def read_conn
+    sql = "select * from product"
+    result = ActiveRecord::Base.connection.execute(sql)
+    render json: result
   end
 
   def write
@@ -11,12 +17,31 @@ class DatabaseController < ApplicationController
     @product.save
   end
 
+  def write_conn
+    sql = "insert into product (product_name, product_price) values ('ROR write conn', 1234)"
+    ActiveRecord::Base.connection.execute(sql)
+  end
+
+  def write_many
+    for i in 1..10 do
+      @product = Product.new(product_params)
+      @product.save
+    end
+  end
+
+  def write_many_conn
+    for i in 1..10 do
+      sql = "insert into product (product_name, product_price) values ('ROR write conn', 1234)"
+      ActiveRecord::Base.connection.execute(sql)
+    end
+  end
+
   def product_by_id
     @product = Product.find_by(product_id: params[:productId])
-    render json:@product
+    render json: @product
   end
 
   def product_params
-    params.permit(:product_id, :product_name, :product_price)
+    params.permit(:product_name, :product_price)
   end
 end
