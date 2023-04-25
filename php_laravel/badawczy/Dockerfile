@@ -34,4 +34,5 @@ WORKDIR /var/www
 
 COPY --chown=maciej:maciej . .
 RUN composer install
+RUN php artisan cache:clear
 USER maciej

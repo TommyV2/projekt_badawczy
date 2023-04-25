@@ -12,6 +12,8 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        "database_write"
+        "database_write",
+        "database_write_conn",
+        "database_write_many"
     ];
 }
