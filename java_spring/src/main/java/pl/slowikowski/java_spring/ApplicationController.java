@@ -45,36 +45,35 @@ public class ApplicationController {
 
     @PostMapping("/database_write")
     @Transactional
-    public void databaseWrite(@RequestBody ProductDTO body) {
-        productRepository.save(new Product(body.getProduct_name(), body.getProduct_price()));
+    public void databaseWrite() {
+        productRepository.save(new Product("Java db write", 4321));
     }
 
     @PostMapping("/database_write_conn")
     @Transactional
-    public void databaseWriteConn(@RequestBody ProductDTO body) {
-        Query query = entityManager.createNativeQuery("insert into product (product_id, product_name, product_price) values (:id, :name, :price)");
-        query.setParameter("id", 1234);
-        query.setParameter("name", body.getProduct_name());
-        query.setParameter("price", body.getProduct_price());
+    public void databaseWriteConn() {
+        Query query = entityManager.createNativeQuery("insert into product (product_name, product_price) values (:name, :price)");
+//        query.setParameter("id", 1234);
+        query.setParameter("name", "Java write conn");
+        query.setParameter("price", 1234);
         query.executeUpdate();
     }
 
     @PostMapping("/database_write_many")
     @Transactional
-    public void databaseWriteMany(@RequestBody ProductDTO body) {
+    public void databaseWriteMany() {
         for (int i = 1000; i < 1010; i++) {
-            productRepository.save(new Product(i, body.getProduct_name(), body.getProduct_price()));
+            productRepository.save(new Product(i, "Java write many", 1234));
         }
     }
 
     @PostMapping("/database_write_many_conn")
     @Transactional
-    public void databaseWriteManyConn(@RequestBody ProductDTO body) {
+    public void databaseWriteManyConn() {
         for (int i = 1010; i < 1020; i++) {
-            Query query = entityManager.createNativeQuery("insert into product (product_id, product_name, product_price) values (:id, :name, :price)");
-            query.setParameter("id", i);
-            query.setParameter("name", body.getProduct_name());
-            query.setParameter("price", body.getProduct_price());
+            Query query = entityManager.createNativeQuery("insert into product (product_name, product_price) values (:name, :price)");
+            query.setParameter("name", "Java write many conn");
+            query.setParameter("price", 1234);
             query.executeUpdate();
         }
     }
