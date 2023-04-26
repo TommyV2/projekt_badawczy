@@ -46,14 +46,13 @@ public class ApplicationController {
     @PostMapping("/database_write")
     @Transactional
     public void databaseWrite(@RequestBody ProductDTO body) {
-        productRepository.save(new Product(body.getProduct_name(), body.getProduct_price()));
+        productRepository.save(new Product("Generated", 123));
     }
 
     @PostMapping("/database_write_conn")
     @Transactional
     public void databaseWriteConn(@RequestBody ProductDTO body) {
-        Query query = entityManager.createNativeQuery("insert into product (product_id, product_name, product_price) values (:id, :name, :price)");
-        query.setParameter("id", 1234);
+        Query query = entityManager.createNativeQuery("insert into product (product_name, product_price) values (:name, :price)");
         query.setParameter("name", body.getProduct_name());
         query.setParameter("price", body.getProduct_price());
         query.executeUpdate();
@@ -63,7 +62,7 @@ public class ApplicationController {
     @Transactional
     public void databaseWriteMany(@RequestBody ProductDTO body) {
         for (int i = 1000; i < 1010; i++) {
-            productRepository.save(new Product(i, body.getProduct_name(), body.getProduct_price()));
+            productRepository.save(new Product(body.getProduct_name(), body.getProduct_price()));
         }
     }
 
@@ -71,8 +70,7 @@ public class ApplicationController {
     @Transactional
     public void databaseWriteManyConn(@RequestBody ProductDTO body) {
         for (int i = 1010; i < 1020; i++) {
-            Query query = entityManager.createNativeQuery("insert into product (product_id, product_name, product_price) values (:id, :name, :price)");
-            query.setParameter("id", i);
+            Query query = entityManager.createNativeQuery("insert into product (product_name, product_price) values (:name, :price)");
             query.setParameter("name", body.getProduct_name());
             query.setParameter("price", body.getProduct_price());
             query.executeUpdate();
