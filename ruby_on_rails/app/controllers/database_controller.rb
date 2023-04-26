@@ -13,7 +13,9 @@ class DatabaseController < ApplicationController
   end
 
   def write
-    @product = Product.new(product_params)
+    @product = Product.new
+    @product.product_name = "Ruby on rails write"
+    @product.product_price = 1234
     @product.save
   end
 
@@ -24,7 +26,9 @@ class DatabaseController < ApplicationController
 
   def write_many
     for i in 1..10 do
-      @product = Product.new(product_params)
+      @product = Product.new
+      @product.product_name = "Ruby on rails write many"
+      @product.product_price = 1234
       @product.save
     end
   end
@@ -39,9 +43,5 @@ class DatabaseController < ApplicationController
   def product_by_id
     @product = Product.find_by(product_id: params[:productId])
     render json: @product
-  end
-
-  def product_params
-    params.permit(:product_name, :product_price)
   end
 end
